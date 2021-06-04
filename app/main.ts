@@ -1,6 +1,7 @@
-import { app, BrowserWindow, screen } from 'electron';
+import {app, BrowserWindow, screen} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import installExtension from 'electron-devtools-installer';
 
 // Initialize remote module
 require('@electron/remote/main').initialize();
@@ -24,11 +25,12 @@ function createWindow(): BrowserWindow {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
       contextIsolation: false,  // false if you want to run 2e2 test with Spectron
-      enableRemoteModule : true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
+      enableRemoteModule: true // true if you want to run 2e2 test  with Spectron or use remote module in renderer context (ie. Angular)
     },
   });
 
   if (serve) {
+
 
     win.webContents.openDevTools();
 
@@ -78,6 +80,18 @@ try {
     if (win === null) {
       createWindow();
     }
+  });
+
+
+  const ANGULAR_DEVTOOLS = {
+    id: 'ienfalfjdbdpebioblfackkekamfmbnh',
+    electron: '>=1.2.1'
+  };
+
+  app.whenReady().then(() => {
+    installExtension(ANGULAR_DEVTOOLS)
+      .then((name) => console.log(`Added Extension:  ${name}`))
+      .catch((err) => console.log('An error occurred: ', err));
   });
 
 } catch (e) {
